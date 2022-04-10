@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통계 프로젝트</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <div>
+        <h4> 소개 ㅣ Elasticsearch API를 활용한 통계 그래프 만들기! </h4>
+        <h4> 사용 데이터 | 전국종량제봉투가격표준데이터 </h4>
+        <hr>
+    </div>
+    <div>
+        <canvas id="priceChart" style="max-width: 400px; max-height: 400px;">This is a elasticsearch api chart</canvas>
+    </div>
+</body>
+</html>
+
+<script>
+const data2 = "<%= sample %>";
+const data = [{x: 'Jan', net: 100, cogs: 50, gm: 50}, {x: 'Feb', net: 120, cogs: 55, gm: 75}];
+const cfg = {
+    type: 'bar',
+    data: {
+        labels: ['Jan', 'Feb'],
+        datasets: [{
+            label: 'Net sales',
+            data: data,
+            parsing: {
+                yAxisKey: 'net'
+            }
+        }, {
+            label: 'Cost of goods sold',
+            data: data,
+            parsing: {
+                yAxisKey: 'cogs'
+            }
+        }, {
+            label: 'Gross margin',
+            data: data,
+            parsing: {
+                yAxisKey: 'gm'
+            }
+        }]
+    },
+};
+const ctx = document.getElementById('priceChart').getContext('2d')
+// const myChart = new Chart("myChart", cfg)
+const myChart = new Chart(ctx, cfg)
+</script>

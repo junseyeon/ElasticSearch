@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "@elastic/elasticsearch": "^8.1.0",
+    "chart.js": "^3.7.1",
+    "ejs": "^3.1.6",
+    "elasticsearch": "^16.7.3",
+    "express": "^4.17.3",
+    "jquery": "^3.6.0",
+    "jsdom": "^19.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}

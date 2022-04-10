@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통계 프로젝트</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<style type="text/css">
+    .parent::after{
+        clear: both;
+        display: block;
+        padding: 10%;
+    }
+    .parent .item{
+        float: left;
+        width: 50%;
+    }
+
+</style>
+<body >
+    <center>
+        <h3> 소개 ㅣ Elasticsearch API를 활용한 통계 그래프 만들기 </h3>
+        <h4> 사용 데이터 | 전국종량제봉투가격표준데이터 </h4>
+        <hr>
+    </center>
+    <div class="parent">
+        <div class="item">
+            <canvas id="purposeChart">전라북도 종량제 봉투 종류에 따른 가격</canvas>
+        </div>
+        <div class="item">
+            <canvas id="districtChart">전국 지역별로 가격 차트(입력된 데이터의 조건이 다 달라서 큰 의미 없을 것으로 예상)</canvas>
+        </div>
+        <div class="item">
+            <canvas id="manageDepartment">전국 종량제봉투 관리부서 비율 차트</canvas>
+        </div>
+        <div class="item">
+            <canvas id="GyeonggidoPrice">같은 조건에서의 경기도 가격</canvas>
+        </div>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+/* json값 사용 */
+var list = "<%= JSON.stringify(context) %>";
+list = list.replaceAll('&#34;','\"');
+list = JSON.parse(list);     // Object -> JSON
+console.log(list);
+
+/* json 값 뽑아내기 */
+//console.log(list.c1[0].garbageUsage.value);    // list.d1[0].doc_count  
+//console.log(list.c2[0].g5.avg, list.c2[0].key);
+
+/* json의 key값이 숫자 일때 */
+//console.log(list.c4[0]._source['10ℓ가격']);
+
+const data =[];
+ for (let i=0; i<list.c1.length; i++){
+     data.push({x: list.c1[i].key, g5: list.c1[i].garbage5.value, g10: list.c1[i].garbage10.value, g20: list.c1[i].garbage20.value, g50: list.c1[i].garbage50.value , g120: list.c1[i].garbage120.value});
+ }
+ 
+const cfg1 = {
+    type: 'bar',
+    data: {
+        labels: [list.c1[0].key, list.c1[1].key, list.c1[2].key, list.c1[3].key,list.c1[4].key],
+        datasets: [{
+            label: '5ℓ가격',
+            backgroundColor:'rgba(255, 99, 132, 0.8)',
+            data: data,
+            parsing: {
+                yAxisKey: 'g5'
+            }
+        }, {
+            label: '10ℓ가격',
+            backgroundColor:'rgba(54, 162, 235, 0.8)',
+            data: data,
+            parsing: {
+                yAxisKey: 'g10'
+            }
+        }, {
+            label: '20ℓ가격',
+            backgroundColor:'rgba(255, 206, 86, 0.8)',
+            data: data,
+            parsing: {
+                yAxisKey: 'g20'
+            }
+        }, {
+            label: '50ℓ가격',
+            backgroundColor: 'rgba(75, 192, 192, 0.8)',
+            data: data,
+            parsing: {
+                yAxisKey: 'g50'
+            }
+        }, {
+            label: '120ℓ가격',
+            backgroundColor:'rgba(153, 102, 255, 0.8)',
+            data: data,
+            parsing: {
+                yAxisKey: 'g120'
+            }
+        }
+    ]
+    },
+    options : {
+        plugins:{
+          title : {
+            display:true,
+            text : "전라북도 종량제봉투 종류별 평균가격"
+          }
+      },
+      scales : {
+            y : {
+                display : true,
+                title : {
+                    display : true,
+                    text : "price"
+                }
+            }
+        }
+    }
+};
+
+
+// 빈 배열 생서애서 객체 추가하기
+
+const data2=[];
+for (let i=0; i<list.c2.length; i++){
+    data2.push({x:list.c2[i].key, g5:list.c2[i].g5.avg, g10: list.c2[i].g10.avg, g20: list.c2[i].g20.avg,
+         g30: list.c2[i].g30.avg , g75: list.c2[i].g75.avg, g100: list.c2[i].g100.avg })
+}
+
+const cfg2 = {
+    type: 'bar',
+    data: {
+        labels: [list.c2[0].key, list.c2[1].key, list.c2[2].key, list.c2[3].key,list.c2[4].key],
+        datasets: [{
+            label: '5ℓ가격',
+            backgroundColor: 'rgba(255, 99, 132, 0.8)',
+            data: data2,
+            parsing: {
+                yAxisKey: 'g5'
+            }
+        }, {
+            label: '10ℓ가격',
+            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+            data: data2,
+            parsing: {
+                yAxisKey: 'g10'
+            }
+        }, {
+            label: '20ℓ가격',
+            backgroundColor : 'rgba(255, 206, 86, 0.8)',
+            data: data2,
+            parsing: {
+                yAxisKey: 'g20'
+            }
+        }, {
+            label: '30ℓ가격',
+            backgroundColor :'rgba(75, 192, 192, 0.8)',
+            data: data2,
+            parsing: {
+                yAxisKey: 'g30'
+            }
+        }, {
+            label: '75ℓ가격',
+            backgroundColor : 'rgba(153, 102, 255, 0.8)',
+            data: data2,
+            parsing: {
+                yAxisKey: 'g75'
+            }
+        }, {
+            label: '100ℓ가격',
+            backgroundColor : 'rgba(255, 159, 64, 0.8)',
+            data : data2,
+            parsing: {
+                yAxisKey : 'g100'
+            }
+        }
+    ]
+    },
+    options : {
+        plugins:{
+            title : {
+            display: true,
+            text : "지역별 종량제봉투 가격"
+            }
+        },
+        scales : {
+            y : {
+                display : true,
+                title : {
+                    display : true,
+                    text : "price"
+                }
+            }
+        }
+    }
+};
+
+//chart3 //관리부서 pie차트로 나타내기 
+const label3 = [];
+const dd3 = [];
+for (let i =0; i<list.c3.length; i++){
+    label3.push(list.c3[i].key);
+    dd3.push(list.c3[i].doc_count);
+}
+
+const data3 = {
+  labels: label3,
+  datasets: [{
+    label: '관리부서 도넛차트',
+    data: dd3,
+    backgroundColor: [
+    'rgba(255, 99, 132, 0.2)',
+      'rgba(255, 159, 64, 0.2)',
+      'rgba(255, 205, 86, 0.2)',
+      'rgba(75, 192, 192, 0.2)',
+      'rgba(54, 162, 235, 0.2)',
+      'rgba(153, 102, 255, 0.2)',
+      'rgba(201, 203, 207, 0.2)'
+    ],
+    borderColor: [
+      'rgb(255, 99, 132)',
+      'rgb(255, 159, 64)',
+      'rgb(255, 205, 86)',
+      'rgb(75, 192, 192)',
+      'rgb(54, 162, 235)',
+      'rgb(153, 102, 255)',
+      'rgb(201, 203, 207)'
+    ],
+    hoverOffset: 4
+  }]
+};
+
+const cfg3 = {
+  type: 'doughnut',
+  data: data3,
+  options : {
+      plugins:{
+          title : {
+            display:true,
+            text : "관리부서"
+          }
+       },
+      maintainAspectRatio : false
+  }
+};
+
+
+//----------- 4번재 : LINE CHART --------------- 
+
+//라인 데이터 미리 준비(라인 4개)
+function linedata(index){
+    line1.push(list.c4[index]._source['10ℓ가격']);
+    line2.push(list.c4[index]._source['20ℓ가격']);
+    line3.push(list.c4[index]._source['50ℓ가격']);
+    line4.push(list.c4[index]._source['75ℓ가격']);
+    labels4.push(list.c4[index]._source.시군구명);
+}
+
+const line1=[], line2=[], line3=[], line4=[];
+const labels4=[];
+for (let i=0; i<list.c4.length; i++){  
+    console.log(i);
+    if(i!==list.c4.length-1){  // length는 26개인데 i는 0부터라서 25개 임으로 -1까지 /25가 아니면 
+        if(list.c4[i]._source.시군구명==list.c4[i+1]._source.시군구명){
+            if (list.c4[i]._source['데이터기준일자'] < list.c4[i+1]._source['데이터기준일자']){   // 날짜가 클수록 뒤쪽 데이터? /같으면 아무 데이터나 상관 없으니깐 =붙임 
+            linedata(i+1);
+            i+=1;
+            } 
+        }
+        else{
+            linedata(i);
+        }
+    }
+    else{
+        linedata(i);
+    } 
+}
+// console.log(line1);
+// console.log(line2);
+// console.log(line3);
+// console.log(line4);
+
+const data4 = {
+  labels: labels4,
+  datasets: [
+    {
+      label: '10L용량',
+      data: line1,
+      borderColor:  'rgba(255, 99, 132, 0.2)',
+      backgroundColor:  'rgb(255, 99, 132)',
+    },
+    {
+      label: '20L용량',
+      data: line2,
+      borderColor:  'rgba(255, 159, 64, 0.2)',
+      backgroundColor:   'rgb(255, 159, 64)',
+    },
+    {
+      label: '50L용량',
+      data: line3,
+      borderColor:  'rgba(255, 205, 86, 0.2)',
+      backgroundColor:  'rgb(255, 205, 86)',
+    },
+    {
+      label: '75L용량',
+      data: line4,
+      borderColor: 'rgba(75, 192, 192, 0.2)',
+      backgroundColor: 'rgb(75, 192, 192)',
+    }
+  ]
+};
+
+
+const cfg4 = {
+  type: 'line',
+  data: data4,
+  options: {
+    responsive: true,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    stacked: false,
+    plugins: {
+      title: {
+        display: true,
+        text: '경기도 종량제봉투 시군구별 가격'
+      }
+    },
+    scales: {
+      y: {            //y축 그래프가 2개 
+        type: 'linear',
+        display: true,
+        position: 'left',
+      }
+    }
+  },
+};
+
+
+
+// 방법1
+// const myChart = new Chart("myChart", cfg)
+
+//방법2
+const pc = document.getElementById('purposeChart').getContext('2d');
+const dc = document.getElementById('districtChart').getContext('2d');
+const md = document.getElementById('manageDepartment').getContext('2d');
+const gp = document.getElementById('GyeonggidoPrice').getContext('2d');
+
+const myChart1 = new Chart(pc, cfg1);
+const myChart2 = new Chart(dc, cfg2);
+const myChart3 = new Chart(md, cfg3);
+const myChart4 = new Chart(gp, cfg4);
+
+</script>

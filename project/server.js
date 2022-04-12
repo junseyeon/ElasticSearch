@@ -221,7 +221,7 @@ async function run(){
     c2 = result2.aggregations.district.buckets; 
     c3 = result3.aggregations.manageDepartment.buckets;
     c4 = result4.hits.hits;
-    console.log(c4);
+    //console.log(c4);
 
     context = {     //var 없으면 전역변수 
         c1, c2, c3,c4
